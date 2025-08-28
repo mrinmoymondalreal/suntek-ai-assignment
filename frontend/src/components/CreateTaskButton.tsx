@@ -32,8 +32,12 @@ export function CreateTaskButton({
         dueDate: newTaskDueDate,
       };
       const data = await CreateTask(newTask);
-      newTask.id = (await data.json()).task.id;
-      setTasks([...tasks, newTask]);
+      newTask.id = data.task.id;
+      newTask.description = data.task.task_description;
+      newTask.dueDate = data.task.task_deadline;
+      newTask.title = data.task.task_name;
+
+      setTasks([newTask, ...tasks]);
       setNewTaskTitle("");
       setNewTaskDescription("");
       setNewTaskDueDate(undefined);
@@ -57,7 +61,7 @@ export function CreateTaskButton({
             />
           </div>
           <Textarea
-            placeholder="Description"
+            placeholder="Description (AI will be used to set title, description and deadline based on the title you provided)"
             value={newTaskDescription}
             onChange={(e) => setNewTaskDescription(e.target.value)}
             className="border-0 p-0 resize-none placeholder:text-gray-400 focus-visible:ring-0"

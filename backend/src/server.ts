@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 3000;
 
 const allowedOrigins = [
   "http://localhost:5173", // frontend dev
+  process.env.FRONTEND_URL || "",
 ];
 
 app.use(

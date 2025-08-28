@@ -7,7 +7,7 @@ export const fetchClient = async (
   if (options.body) {
     headers["Content-Type"] = "application/json";
   }
-  return fetch("http://localhost:3000" + url, {
+  return fetch(url, {
     credentials: "include",
     headers: {
       Authorization: `Bearer ${token}`,

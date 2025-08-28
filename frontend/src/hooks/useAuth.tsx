@@ -21,7 +21,7 @@ interface AuthResponse {
 const loginUser = async (
   credentials: LoginCredentials
 ): Promise<AuthResponse> => {
-  const response = await fetch("http://localhost:3000/api/auth/signin", {
+  const response = await fetch("/api/auth/signin", {
     method: "POST",
     credentials: "include",
     headers: {
@@ -40,7 +40,7 @@ const loginUser = async (
 const signupUser = async (
   credentials: LoginCredentials & { name: string }
 ): Promise<AuthResponse> => {
-  const response = await fetch("http://localhost:3000/api/auth/signup", {
+  const response = await fetch("/api/auth/signup", {
     method: "POST",
     credentials: "include",
     headers: {
@@ -63,7 +63,7 @@ const getCurrentUser = async (): Promise<User | null> => {
     return null;
   }
 
-  const response = await fetch("http://localhost:3000/api/me", {
+  const response = await fetch("/api/me", {
     credentials: "include",
     headers: {
       Authorization: `Bearer ${token}`,

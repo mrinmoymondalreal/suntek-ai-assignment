@@ -11,7 +11,8 @@
 import { ChartAreaInteractive } from "@/components/chart-area-interactive";
 import { SectionCards } from "@/components/section-cards";
 import Header from "@/components/Header";
-import { useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router";
+import { Button } from "@/components/ui/button";
 
 // import data from "./data.json";
 
@@ -57,6 +58,13 @@ export default function Page() {
       <Header />
       <div className="flex flex-1 flex-col">
         <div className="@container/main flex flex-1 flex-col gap-2">
+          <div>
+            <Button asChild className="w-[calc(100%-48px)] m-6">
+              <Link to="/tasks" className="">
+                View all tasks
+              </Link>
+            </Button>
+          </div>
           <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
             <SectionCards data={loaderData.info} />
             <div className="px-4 lg:px-6">

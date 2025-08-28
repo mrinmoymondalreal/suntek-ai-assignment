@@ -136,18 +136,20 @@ export function TaskItem({
             )}
           </div>
         </div>
-
-        <div
-          className={cn(
-            {
-              "translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-0":
-                !task.isTimerRunning,
-            },
-            "transition-all duration-200"
-          )}
-        >
-          <TaskTimer taskId={task.id} setTask={setTask} />
-        </div>
+        {/* Task Timer */}
+        {status != "Completed" && (
+          <div
+            className={cn(
+              {
+                "translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-0":
+                  !task.isTimerRunning,
+              },
+              "transition-all duration-200"
+            )}
+          >
+            <TaskTimer taskId={task.id} setTask={setTask} />
+          </div>
+        )}
       </div>
     </>
   );

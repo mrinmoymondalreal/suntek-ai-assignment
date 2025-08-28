@@ -49,7 +49,10 @@ export function CreateTaskButton({
       <CardContent className="px-4">
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <label htmlFor="task-title" className="text-gray-600">
+            <label
+              htmlFor="task-title"
+              className="text-gray-600 dark:text-slate-300"
+            >
               Title:{" "}
             </label>
             <Input
@@ -57,14 +60,14 @@ export function CreateTaskButton({
               placeholder="Finish sales report by Thu at 3pm"
               value={newTaskTitle}
               onChange={(e) => setNewTaskTitle(e.target.value)}
-              className="border-0 p-0 text-base placeholder:text-gray-400 focus-visible:ring-0"
+              className="border-0 bg-transparent dark:pl-2 p-0 text-base placeholder:text-gray-400 focus-visible:ring-0"
             />
           </div>
           <Textarea
             placeholder="Description (AI will be used to set title, description and deadline based on the title you provided)"
             value={newTaskDescription}
             onChange={(e) => setNewTaskDescription(e.target.value)}
-            className="border-0 p-0 resize-none placeholder:text-gray-400 focus-visible:ring-0"
+            className="border-0 p-0 bg-transparent dark:pl-2 resize-none placeholder:text-gray-400 focus-visible:ring-0"
             rows={2}
           />
           <div className="flex items-center justify-between pt-2 border-t">

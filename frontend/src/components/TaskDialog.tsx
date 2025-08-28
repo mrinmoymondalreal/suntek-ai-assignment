@@ -112,7 +112,7 @@ export function TaskDialog({
               <div className="flex-1">
                 <DialogTitle className="hidden">{title}</DialogTitle>
                 <Input
-                  className="border-none px-2 mr-6 w-[90%] text-xl font-medium text-gray-900 mb-2"
+                  className="dark:text-white border-none px-2 mr-6 w-[90%] text-xl font-medium text-gray-900 mb-2"
                   onChange={(e) => handleTitleChange(e.target.value)}
                   value={title}
                 />
@@ -120,7 +120,7 @@ export function TaskDialog({
                 <Textarea
                   ref={descriptionTextAreaRef}
                   className={cn(
-                    "hidden border-none text-gray-600 p-2 mt-2 mb-4",
+                    "hidden border-none text-gray-600 p-2 mt-2 mb-4 dark:text-white",
                     {
                       "block ": isDescriptionAvailable,
                     }

@@ -145,7 +145,7 @@ export default function ({
 
       {lastStartedOn && (
         <div className="flex flex-col justify-end text-sm text-gray-600">
-          <div className="font-medium">
+          <div className="font-medium dark:text-white">
             {isTimerRunning && (
               <Timer
                 startedOn={lastStartedOn!}

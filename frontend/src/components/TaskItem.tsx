@@ -73,7 +73,7 @@ export function TaskItem({
         handleStatusChange={handleStatusChange}
         setTask={setTask}
       />
-      <div className="transition-all duration-200 flex items-start gap-3 group">
+      <div className="transition-all duration-200 flex items-start gap-3 group overflow-hidden dark:text-white">
         <Checkbox
           checked={status == "Completed"}
           onCheckedChange={(checked) =>
@@ -82,11 +82,11 @@ export function TaskItem({
           className="mt-1 border border-gray-600 rounded-full"
         />
         <div
-          className="flex-1 cursor-pointer transition-all duration-200"
+          className="flex-1 cursor-pointer transition-all duration-200 dark:text-white"
           onClick={() => setTaskDialogOpen(true)}
         >
           <div
-            className={cn("transition-all duration-200", {
+            className={cn("transition-all duration-200 dark:text-white", {
               "line-through text-gray-500": status == "Completed",
               "text-gray-900": status != "Completed",
             })}
@@ -94,7 +94,9 @@ export function TaskItem({
             {title}
           </div>
           {isDescriptionAvailable && (
-            <p className="text-sm text-gray-600">{description}</p>
+            <p className="text-sm text-gray-600 dark:text-slate-400">
+              {description}
+            </p>
           )}
           <div className="flex gap-2 transition-all duration-200">
             {getDate() && (

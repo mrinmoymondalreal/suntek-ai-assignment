@@ -32,7 +32,7 @@ const TodoApp = () => {
             <div className="mb-6 p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-lg font-medium text-gray-900 flex items-center gap-2">
+                  <h2 className="text-lg font-medium text-gray-900 dark:text-white flex items-center gap-2">
                     Task List
                     <Badge variant="secondary" className="text-xs">
                       0
@@ -69,7 +69,7 @@ const TodoApp = () => {
           <div className="mb-6 p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-medium text-gray-900 flex items-center gap-2">
+                <h2 className="text-lg font-medium text-gray-900 dark:text-white flex items-center gap-2">
                   Task List
                   <Badge variant="secondary" className="text-xs">
                     {completedBonusCount}

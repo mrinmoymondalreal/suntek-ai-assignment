@@ -4,6 +4,7 @@ import taskRoutes from "./tasks";
 import timerRoutes from "./timers";
 import summaryRoutes from "./summary";
 import aiRoutes from "./ai";
+import chartsRoutes from "./charts";
 import { requireAuth } from "../middleware/auth";
 
 const router = Router();
@@ -13,6 +14,7 @@ router.use("/tasks", taskRoutes);
 router.use("/timers", timerRoutes);
 router.use("/summary", summaryRoutes);
 router.use("/ai", aiRoutes);
+router.use("/charts", chartsRoutes);
 
 router.get("/me", requireAuth, (_req: Request, res: Response) => {
   const user = res.locals.user;

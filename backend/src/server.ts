@@ -9,9 +9,14 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
+
+const allowedOrigins = [
+  "http://localhost:5173", // frontend dev
+];
+
 app.use(
   cors({
-    origin: true, // customize to your frontend origin in production
+    origin: allowedOrigins,
     credentials: true,
   })
 );

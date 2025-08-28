@@ -18,15 +18,14 @@ const setAuthCookies = (
   const isProd = process.env.NODE_ENV === "production";
   res.cookie("access_token", accessToken, {
     httpOnly: true,
-    secure: isProd,
-    sameSite: "lax",
-    maxAge: 1000 * 60 * 60, // 1 hour
+    secure: isProd, // secure only in production
+    sameSite: "none", // important for cross-origin cookies
   });
+
   res.cookie("refresh_token", refreshToken, {
     httpOnly: true,
     secure: isProd,
-    sameSite: "lax",
-    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+    sameSite: "none", // important for cross-origin cookies
   });
 };
 
@@ -36,11 +35,7 @@ export const requireAuth = async (
   next: NextFunction
 ) => {
   try {
-    let accessToken =
-      req.cookies?.access_token ||
-      (req.headers.authorization?.startsWith("Bearer ")
-        ? req.headers.authorization.split(" ")[1]
-        : null);
+    let accessToken = req.cookies?.access_token;
 
     // Try to verify the access token first
     try {

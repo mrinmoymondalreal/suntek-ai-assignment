@@ -18,13 +18,11 @@ const setAuthCookies = (
   res.cookie("access_token", accessToken, {
     httpOnly: true,
     secure: isProd,
-    sameSite: "lax",
     maxAge: 1000 * 60 * 60, // 1 hour
   });
   res.cookie("refresh_token", refreshToken, {
     httpOnly: true,
     secure: isProd,
-    sameSite: "lax",
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
   });
 };

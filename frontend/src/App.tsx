@@ -17,7 +17,11 @@ const router = createBrowserRouter([
     element: <TodoApp />,
     loader: async () => {
       const response = await fetchClient("/api/tasks");
-      return await response.json();
+      const activeTimers = await fetchClient("/api/timers/active");
+      return {
+        tasks: (await response.json()).tasks,
+        activeTimers: (await activeTimers.json()).active_timers,
+      };
     },
   },
   {

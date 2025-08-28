@@ -8,12 +8,18 @@ import Header from "@/components/Header";
 import { UpdateTaskStatus } from "@/lib/TaskOperations";
 
 const TodoApp = () => {
-  const all_tasks = useLoaderData().tasks.map((task: any) => ({
+  const loaderData = useLoaderData();
+  const timers = new Set<string>();
+  loaderData.activeTimers.map((timer: { task_id: { _id: string } }) => {
+    timers.add(timer.task_id._id);
+  });
+  const all_tasks = loaderData.tasks.map((task: any) => ({
     title: task.task_name,
     description: task.task_description,
     status: task.status,
     dueDate: new Date(task.task_deadline),
     id: task.id,
+    isTimerRunning: timers.has(task.id),
   }));
   const [tasks, setTasks] = useState<Task[]>(all_tasks);
 

@@ -7,10 +7,20 @@ import Calendar29 from "./Caledar";
 import { TaskStatusBadge } from "./TaskStatusBadge";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useMemo } from "react";
 import { deleteTask, UpdateTask } from "@/lib/TaskOperations";
 import { type Task } from "./TaskItem";
 import TaskTimer from "./TaskTimer";
+
+type TaskStatus = "Pending" | "In Progress" | "Completed";
+
+function debounce<F extends (...args: any[]) => void>(fn: F, wait = 300) {
+  let t: ReturnType<typeof setTimeout> | null = null;
+  return (...args: Parameters<F>) => {
+    if (t) clearTimeout(t);
+    t = setTimeout(() => fn(...args), wait);
+  };
+}
 
 export function TaskDialog({
   open,
@@ -22,7 +32,6 @@ export function TaskDialog({
   description,
   setDescription,
   getDate,
-  dueDate,
   setDueDate,
   isDescriptionAvailable,
   setIsDescriptionAvailable,
@@ -32,7 +41,7 @@ export function TaskDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   task: Task;
-  status: "Pending" | "In Progress" | "Completed";
+  status: TaskStatus;
   title: string;
   dueDate: Date | undefined;
   setDueDate: (d: Date | undefined) => void;
@@ -42,58 +51,49 @@ export function TaskDialog({
   getDate: () => string | undefined;
   isDescriptionAvailable: boolean;
   setIsDescriptionAvailable: (b: boolean) => void;
-  handleStatusChange: (
-    status: "Pending" | "In Progress" | "Completed"
-  ) => () => void;
+  handleStatusChange: (status: TaskStatus) => () => void;
   setTask: React.Dispatch<React.SetStateAction<Task[]>>;
 }) {
   const descriptionTextAreaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Focus/select behavior preserved
   useEffect(() => {
     descriptionTextAreaRef.current?.focus();
     isDescriptionAvailable && descriptionTextAreaRef.current?.select();
   }, [isDescriptionAvailable, open]);
 
-  useEffect(() => {
-    UpdateTask(task.id, { ...task, dueDate, title, description, status });
-    // Update the task in the local state as well
-    setTask((prev) =>
-      prev.map((t) =>
-        t.id === task.id ? { ...t, dueDate, title, description, status } : t
-      )
-    );
-  }, [title, description, status, dueDate, task.id, setTask]);
+  // Debounced sync to backend + tasks array, created per task.id to avoid cross-talk
+  const debouncedSync = useMemo(() => {
+    const sync = (payload: Partial<Task>) => {
+      const next = { ...task, ...payload };
+      UpdateTask(task.id, next);
+      setTask((prev) =>
+        prev.map((t) => (t.id === task.id ? { ...t, ...payload } : t))
+      );
+    };
+    return debounce(sync, 300);
+    // recreate if switching to a different task id
+  }, [task.id, setTask, task]);
 
-  const handleStatusUpdate = (
-    newStatus: "Pending" | "In Progress" | "Completed"
-  ) => {
-    handleStatusChange(newStatus)();
-    setTask((prev) =>
-      prev.map((t) => (t.id === task.id ? { ...t, status: newStatus } : t))
-    );
+  // Handlers: instant local UI update via individual setters; debounced sync persists changes
+  const handleStatusUpdate = (newStatus: TaskStatus) => {
+    handleStatusChange(newStatus)(); // preserve original behavior
+    debouncedSync({ status: newStatus });
   };
 
   const handleTitleChange = (newTitle: string) => {
-    setTitle(newTitle);
-    setTask((prev) =>
-      prev.map((t) => (t.id === task.id ? { ...t, title: newTitle } : t))
-    );
+    setTitle(newTitle); // instant controlled input
+    debouncedSync({ title: newTitle });
   };
 
   const handleDescriptionChange = (newDescription: string) => {
     setDescription(newDescription);
-    setTask((prev) =>
-      prev.map((t) =>
-        t.id === task.id ? { ...t, description: newDescription } : t
-      )
-    );
+    debouncedSync({ description: newDescription });
   };
 
   const handleDueDateChange = (newDueDate: Date | undefined) => {
     setDueDate(newDueDate);
-    setTask((prev) =>
-      prev.map((t) => (t.id === task.id ? { ...t, dueDate: newDueDate } : t))
-    );
+    debouncedSync({ dueDate: newDueDate });
   };
 
   return (
@@ -103,7 +103,7 @@ export function TaskDialog({
           <div className="flex-1 p-6 overflow-y-auto">
             <div className="flex items-start gap-3 mb-6">
               <Checkbox
-                checked={status == "Completed"}
+                checked={status === "Completed"}
                 onCheckedChange={(checked) =>
                   handleStatusUpdate(checked ? "Completed" : "Pending")
                 }
@@ -173,15 +173,15 @@ export function TaskDialog({
         <div className="w-full flex flex-row items-center justify-between py-4 px-6">
           <div>
             <div className="flex items-center gap-4">
-              <TaskTimer setTask={setTask} taskId={task.id} />
+              {task.status != "Completed" && (
+                <TaskTimer setTask={setTask} taskId={task.id} />
+              )}
             </div>
           </div>
           <Button
             onClick={async () => {
               await deleteTask(task.id);
-              setTask((prev) => {
-                return prev.filter((t) => t.id !== task.id);
-              });
+              setTask((prev) => prev.filter((t) => t.id !== task.id));
             }}
             className="w-fit"
             variant={"destructive"}

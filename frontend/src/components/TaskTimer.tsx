@@ -47,15 +47,17 @@ function Timer({
 export default function ({
   taskId,
   setTask,
+  updateKey,
 }: {
   taskId: string;
   setTask: React.Dispatch<React.SetStateAction<Task[]>>;
+  updateKey?: boolean;
 }) {
   const [isTimerRunning, setTimerRunning] = useState(false);
   const [lastStartedOn, setLastStartedOn] = useState<Date | null>(null);
 
   const {} = useQuery({
-    queryKey: ["timer", taskId],
+    queryKey: ["timer", updateKey || false],
     queryFn: () => {
       return fetchClient(`/api/timers/history/${taskId}`)
         .then((res) => res.json())
@@ -63,7 +65,8 @@ export default function ({
           const currentTimer = data.timer_history.find(
             (e: { is_active: boolean; start_time: string }) => e.is_active
           );
-          if (currentTimer) {
+          console.log(data, currentTimer, currentTimer.start_time);
+          if (!!currentTimer) {
             setLastStartedOn(new Date(currentTimer.start_time));
             setTimerRunning(true);
           }

@@ -4,6 +4,7 @@ import { Calendar } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { TaskDialog } from "./TaskDialog";
+import TaskTimer from "./TaskTimer";
 
 export interface Task {
   id: string;
@@ -134,6 +135,18 @@ export function TaskItem({
               </div>
             )}
           </div>
+        </div>
+
+        <div
+          className={cn(
+            {
+              "translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-0":
+                !task.isTimerRunning,
+            },
+            "transition-all duration-200"
+          )}
+        >
+          <TaskTimer taskId={task.id} setTask={setTask} />
         </div>
       </div>
     </>

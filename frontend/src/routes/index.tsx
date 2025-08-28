@@ -1,20 +1,8 @@
-// import Header from "@/components/Header";
-
-// export default function Page() {
-//   return (
-//     <>
-//       <Header />
-//     </>
-//   );
-// }
-
 import { ChartAreaInteractive } from "@/components/chart-area-interactive";
 import { SectionCards } from "@/components/section-cards";
 import Header from "@/components/Header";
 import { Link, useLoaderData } from "react-router";
 import { Button } from "@/components/ui/button";
-
-// import data from "./data.json";
 
 interface TaskData {
   date: string;
@@ -56,7 +44,7 @@ export default function Page() {
   return (
     <>
       <Header />
-      <div className="flex flex-1 flex-col">
+      <div className="mx-auto max-w-4xl flex flex-1 flex-col">
         <div className="@container/main flex flex-1 flex-col gap-2">
           <div>
             <Button asChild className="w-[calc(100%-48px)] m-6">

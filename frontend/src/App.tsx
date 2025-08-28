@@ -16,7 +16,7 @@ const router = createBrowserRouter([
     path: "/tasks",
     element: <TodoApp />,
     loader: async () => {
-      const response = await fetchClient("api/tasks");
+      const response = await fetchClient("/api/tasks");
       return await response.json();
     },
   },

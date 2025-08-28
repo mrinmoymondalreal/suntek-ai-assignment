@@ -27,6 +27,9 @@ export function TaskItem({
   const [taskDialogOpen, setTaskDialogOpen] = useState(false);
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description);
+  const [dueDate, setDueDate] = useState<Date | undefined>(
+    task.dueDate ? new Date(task.dueDate) : undefined
+  );
   const [isDescriptionAvailable, setIsDescriptionAvailable] = useState(
     Boolean(description && description.length > 0)
   );
@@ -41,10 +44,10 @@ export function TaskItem({
   };
 
   const getDate = () => {
-    if (task.dueDate instanceof Date) {
-      return task.dueDate.toDateString();
+    if (dueDate instanceof Date) {
+      return dueDate.toDateString();
     }
-    return task.dueDate;
+    return dueDate;
   };
 
   return (
@@ -59,6 +62,8 @@ export function TaskItem({
         description={description}
         setDescription={setDescription}
         getDate={getDate}
+        dueDate={dueDate}
+        setDueDate={setDueDate}
         isDescriptionAvailable={isDescriptionAvailable}
         setIsDescriptionAvailable={setIsDescriptionAvailable}
         handleStatusChange={handleStatusChange}
@@ -87,7 +92,7 @@ export function TaskItem({
             <p className="text-sm text-gray-600">{description}</p>
           )}
           <div className="flex gap-2 transition-all duration-200">
-            {task.dueDate && (
+            {getDate() && (
               <div className="flex text-orange-500 items-center gap-1 mt-0.5">
                 <Calendar className="w-3 h-3" />
                 <span className="text-xs">{getDate()}</span>

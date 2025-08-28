@@ -21,6 +21,8 @@ export function TaskDialog({
   description,
   setDescription,
   getDate,
+  dueDate,
+  setDueDate,
   isDescriptionAvailable,
   setIsDescriptionAvailable,
   handleStatusChange,
@@ -30,6 +32,8 @@ export function TaskDialog({
   task: Task;
   status: "Pending" | "In Progress" | "Completed";
   title: string;
+  dueDate: Date | undefined;
+  setDueDate: (d: Date | undefined) => void;
   setTitle: (t: string) => void;
   description: string;
   setDescription: (d: string) => void;
@@ -48,8 +52,8 @@ export function TaskDialog({
   }, [isDescriptionAvailable, open]);
 
   useEffect(() => {
-    UpdateTask(task.id, { ...task, title, description, status });
-  }, [title, description, status]);
+    UpdateTask(task.id, { ...task, dueDate, title, description, status });
+  }, [title, description, status, dueDate]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -119,7 +123,7 @@ export function TaskDialog({
                 )}
               </div>
             </div>
-            <Calendar29 defaultValue={getDate()} />
+            <Calendar29 updateValue={setDueDate} defaultValue={getDate()} />
           </div>
         </div>
         <DialogFooter className="w-full flex items-end pr-2 mb-2 mr-2">

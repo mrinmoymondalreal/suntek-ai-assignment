@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import type { Task } from "./TaskItem";
 import Calendar29 from "./Caledar";
+import { CreateTask } from "@/lib/TaskOperations";
 
 export function CreateTaskButton({
   tasks,
@@ -21,7 +22,7 @@ export function CreateTaskButton({
     undefined
   );
 
-  const handleAddTask = () => {
+  const handleAddTask = async () => {
     if (newTaskTitle.trim()) {
       const newTask: Task = {
         id: Date.now().toString(),
@@ -30,6 +31,8 @@ export function CreateTaskButton({
         status: "Pending",
         dueDate: newTaskDueDate,
       };
+      const data = await CreateTask(newTask);
+      newTask.id = (await data.json()).task.id;
       setTasks([...tasks, newTask]);
       setNewTaskTitle("");
       setNewTaskDescription("");

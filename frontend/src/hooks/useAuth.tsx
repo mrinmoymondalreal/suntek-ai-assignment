@@ -23,6 +23,7 @@ const loginUser = async (
 ): Promise<AuthResponse> => {
   const response = await fetch("http://localhost:3000/api/auth/signin", {
     method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -41,6 +42,7 @@ const signupUser = async (
 ): Promise<AuthResponse> => {
   const response = await fetch("http://localhost:3000/api/auth/signup", {
     method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -61,7 +63,8 @@ const getCurrentUser = async (): Promise<User | null> => {
     return null;
   }
 
-  const response = await fetch("http://localhost:3000/api/auth/me", {
+  const response = await fetch("http://localhost:3000/api/me", {
+    credentials: "include",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -72,7 +75,7 @@ const getCurrentUser = async (): Promise<User | null> => {
     return null;
   }
 
-  return response.json();
+  return (await response.json()).user;
 };
 
 export const useLogin = () => {

@@ -56,7 +56,7 @@ const signupUser = async (
   return response.json();
 };
 
-const getCurrentUser = async (): Promise<User | null> => {
+export const getCurrentUser = async (): Promise<User | null> => {
   const token = localStorage.getItem("accessToken");
 
   if (!token) {

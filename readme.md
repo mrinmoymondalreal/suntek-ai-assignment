@@ -6,7 +6,7 @@ This is a **MERN-style full-stack project** using a modern front-end stack (Reac
 
 ## 🌍 Live Demo
 
-👉 [Live Demo Here](https://your-live-demo-link.com)
+👉 [https://suntek-ai-assignment.vercel.app/](https://suntek-ai-assignment.vercel.app/)
 
 ---
 

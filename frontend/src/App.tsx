@@ -5,6 +5,7 @@ import LoginPage from "./routes/login";
 import SignUpPage from "./routes/signup";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fetchClient } from "./lib/fetchClient";
+import { ThemeProvider } from "./components/theme-provider";
 
 const router = createBrowserRouter([
   {
@@ -38,9 +39,11 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 

@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogFooter, DialogTitle } from "./ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "./ui/textarea";
@@ -8,8 +8,9 @@ import { TaskStatusBadge } from "./TaskStatusBadge";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRef, useEffect } from "react";
-import { UpdateTask } from "@/lib/TaskOperations";
+import { deleteTask, UpdateTask } from "@/lib/TaskOperations";
 import { type Task } from "./TaskItem";
+import TaskTimer from "./TaskTimer";
 
 export function TaskDialog({
   open,
@@ -26,6 +27,7 @@ export function TaskDialog({
   isDescriptionAvailable,
   setIsDescriptionAvailable,
   handleStatusChange,
+  setTask,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -43,6 +45,7 @@ export function TaskDialog({
   handleStatusChange: (
     status: "Pending" | "In Progress" | "Completed"
   ) => () => void;
+  setTask: React.Dispatch<React.SetStateAction<Task[]>>;
 }) {
   const descriptionTextAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -53,7 +56,45 @@ export function TaskDialog({
 
   useEffect(() => {
     UpdateTask(task.id, { ...task, dueDate, title, description, status });
-  }, [title, description, status, dueDate]);
+    // Update the task in the local state as well
+    setTask((prev) =>
+      prev.map((t) =>
+        t.id === task.id ? { ...t, dueDate, title, description, status } : t
+      )
+    );
+  }, [title, description, status, dueDate, task.id, setTask]);
+
+  const handleStatusUpdate = (
+    newStatus: "Pending" | "In Progress" | "Completed"
+  ) => {
+    handleStatusChange(newStatus)();
+    setTask((prev) =>
+      prev.map((t) => (t.id === task.id ? { ...t, status: newStatus } : t))
+    );
+  };
+
+  const handleTitleChange = (newTitle: string) => {
+    setTitle(newTitle);
+    setTask((prev) =>
+      prev.map((t) => (t.id === task.id ? { ...t, title: newTitle } : t))
+    );
+  };
+
+  const handleDescriptionChange = (newDescription: string) => {
+    setDescription(newDescription);
+    setTask((prev) =>
+      prev.map((t) =>
+        t.id === task.id ? { ...t, description: newDescription } : t
+      )
+    );
+  };
+
+  const handleDueDateChange = (newDueDate: Date | undefined) => {
+    setDueDate(newDueDate);
+    setTask((prev) =>
+      prev.map((t) => (t.id === task.id ? { ...t, dueDate: newDueDate } : t))
+    );
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -64,7 +105,7 @@ export function TaskDialog({
               <Checkbox
                 checked={status == "Completed"}
                 onCheckedChange={(checked) =>
-                  handleStatusChange(checked ? "Completed" : "Pending")()
+                  handleStatusUpdate(checked ? "Completed" : "Pending")
                 }
                 className="mt-1 border border-gray-600 rounded-full"
               />
@@ -72,7 +113,7 @@ export function TaskDialog({
                 <DialogTitle className="hidden">{title}</DialogTitle>
                 <Input
                   className="border-none px-2 mr-6 w-[90%] text-xl font-medium text-gray-900 mb-2"
-                  onChange={(e) => setTitle(e.target.value)}
+                  onChange={(e) => handleTitleChange(e.target.value)}
                   value={title}
                 />
                 <TaskStatusBadge status={status} />
@@ -84,7 +125,7 @@ export function TaskDialog({
                       "block ": isDescriptionAvailable,
                     }
                   )}
-                  onChange={(e) => setDescription(e.target.value)}
+                  onChange={(e) => handleDescriptionChange(e.target.value)}
                   onBlur={(e) => {
                     if (e.target.value === "") setIsDescriptionAvailable(false);
                   }}
@@ -107,7 +148,7 @@ export function TaskDialog({
                   <Button
                     className="transition-all duration-200 ml-2 text-xs hover:bg-purple-600/30 bg-purple-600/20 text-purple-800"
                     size="sm"
-                    onClick={handleStatusChange("In Progress")}
+                    onClick={() => handleStatusUpdate("In Progress")}
                   >
                     Mark in progress
                   </Button>
@@ -116,21 +157,38 @@ export function TaskDialog({
                   <Button
                     className="transition-all duration-200 ml-2 text-xs hover:bg-yellow-600/30 bg-yellow-600/20 text-yellow-800"
                     size="sm"
-                    onClick={handleStatusChange("Pending")}
+                    onClick={() => handleStatusUpdate("Pending")}
                   >
                     Mark Pending
                   </Button>
                 )}
               </div>
             </div>
-            <Calendar29 updateValue={setDueDate} defaultValue={getDate()} />
+            <Calendar29
+              updateValue={handleDueDateChange}
+              defaultValue={getDate()}
+            />
           </div>
         </div>
-        <DialogFooter className="w-full flex items-end pr-2 mb-2 mr-2">
-          <Button className="w-fit" variant={"destructive"}>
+        <div className="w-full flex flex-row items-center justify-between py-4 px-6">
+          <div>
+            <div className="flex items-center gap-4">
+              <TaskTimer setTask={setTask} taskId={task.id} />
+            </div>
+          </div>
+          <Button
+            onClick={async () => {
+              await deleteTask(task.id);
+              setTask((prev) => {
+                return prev.filter((t) => t.id !== task.id);
+              });
+            }}
+            className="w-fit"
+            variant={"destructive"}
+          >
             Delete
           </Button>
-        </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );

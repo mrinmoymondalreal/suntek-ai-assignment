@@ -11,17 +11,20 @@ export interface Task {
   description: string;
   status: "Pending" | "In Progress" | "Completed";
   dueDate?: Date | string;
+  isTimerRunning?: boolean;
 }
 
 export function TaskItem({
   task,
   setTaskStatus,
+  setTask,
 }: {
   task: Task;
   setTaskStatus: (
     id: string,
     status: "Pending" | "In Progress" | "Completed"
   ) => void;
+  setTask: React.Dispatch<React.SetStateAction<Task[]>>;
 }) {
   const [status, setStatus] = useState(task.status);
   const [taskDialogOpen, setTaskDialogOpen] = useState(false);
@@ -67,6 +70,7 @@ export function TaskItem({
         isDescriptionAvailable={isDescriptionAvailable}
         setIsDescriptionAvailable={setIsDescriptionAvailable}
         handleStatusChange={handleStatusChange}
+        setTask={setTask}
       />
       <div className="transition-all duration-200 flex items-start gap-3 group">
         <Checkbox
@@ -109,6 +113,11 @@ export function TaskItem({
               >
                 Mark in progress
               </Button>
+            )}
+            {task.isTimerRunning && (
+              <div className="flex items-end text-xs text-blue-800">
+                <span className="font-medium">Timer running</span>
+              </div>
             )}
             {status == "In Progress" && (
               <div

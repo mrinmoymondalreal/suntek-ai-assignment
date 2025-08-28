@@ -75,6 +75,7 @@ const TodoApp = () => {
             <div className="space-y-3">
               {tasks.map((task) => (
                 <TaskItem
+                  setTask={setTasks}
                   key={task.id}
                   setTaskStatus={setTaskStatus}
                   task={task}

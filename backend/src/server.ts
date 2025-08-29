@@ -15,6 +15,8 @@ const allowedOrigins = [
   process.env.FRONTEND_URL || "",
 ];
 
+console.log(allowedOrigins);
+
 app.use(
   cors({
     origin: allowedOrigins,
@@ -23,6 +25,11 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   })
 );
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", allowedOrigins.join(", "));
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  next();
+});
 app.use(express.json());
 app.use(cookieParser());
 

@@ -1,8 +1,12 @@
 {
   "rewrites": [
     {
+      "source": "/api/:path(.*)",
+      "destination": "https://suntek-ai-assignment.onrender.com/api/:path"
+    },
+    {
       "source": "/(.*)",
-      "destination": "/"
+      "destination": "/index.html"
     }
   ]
 }
